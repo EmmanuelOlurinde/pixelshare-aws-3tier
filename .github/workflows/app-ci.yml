@@ -1,0 +1,35 @@
+name: App CI - Build & Push to ECR
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "app/**"
+      - ".github/workflows/app-ci.yml"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: pixelshare-app-ci
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        env:
+          ECR_REPO: 933196964255.dkr.ecr.us-east-1.amazonaws.com/pixelshare-app
+        run: |
+          cd app
+          docker build -t pixelshare-app .
+          docker tag pixelshare-app:latest $ECR_REPO:latest
+          docker push $ECR_REPO:latest

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Photo Feed</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial;
+            background: #fafafa;
+            text-align: center;
+        }
+        .upload-box {
+            margin: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 200px);
+            gap: 15px;
+            justify-content: center;
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📸 Pixelshare App</h1>
+
+<div class="upload-box">
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="photo" required>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+<div class="grid">
+    {% for image in images %}
+        <img src="/uploads/{{ image }}">
+    {% endfor %}
+</div>
+
+</body>
+</html>
